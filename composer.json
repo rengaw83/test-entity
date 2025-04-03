@@ -1,0 +1,31 @@
+{
+    "name": "r83dev/test-entity",
+    "type": "library",
+    "description": "Entity properties trait to test properties of an entity.",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "phpunit",
+        "testing-tools",
+        "entity"
+    ],
+    "authors": [
+        {
+            "name": "R83Dev Michael Wagner",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/rengaw83/test-entity"
+    },
+    "require": {
+        "php": "^8.0",
+        "phpunit/phpunit": ">10",
+        "r83dev/test-accessible": "^1"
+    },
+    "autoload": {
+        "psr-4": {
+            "R83Dev\\TestEntity\\": "./"
+        }
+    }
+}
