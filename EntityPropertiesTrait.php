@@ -65,11 +65,10 @@ trait EntityPropertiesTrait
     {
         $entity = $this->getEntity();
         $setter = 'set'.ucfirst($property);
-        $hasSetter = method_exists($entity, $setter);
 
         $this->assertSame(
-            $hasSetter ? $entity : null,
-            $hasSetter
+            $entity,
+            method_exists($entity, $setter)
                 ? $entity->$setter($value)
                 : $this->setInaccessibleProperty($entity, $property, $value),
             sprintf(

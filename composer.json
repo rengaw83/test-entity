@@ -21,7 +21,7 @@
     "require": {
         "php": "^8.0",
         "phpunit/phpunit": ">10",
-        "r83dev/test-accessible": "^1"
+        "r83dev/test-accessible": "^1.1"
     },
     "autoload": {
         "psr-4": {
