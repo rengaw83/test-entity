@@ -43,7 +43,10 @@ trait EntityPropertiesTrait
     public function testGetters(string $property, mixed $value): void
     {
         $entity = $this->getEntity();
-        $getter = (is_bool($value) ? 'is' : 'get').ucfirst($property);
+        $getter = 'get'.ucfirst($property);
+        if (is_bool($value) && method_exists($entity, 'is'.ucfirst($property))) {
+            $getter = 'is'.ucfirst($property);
+        }
 
         $this->setInaccessibleProperty($entity, $property, $value);
 
