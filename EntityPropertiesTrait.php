@@ -11,6 +11,8 @@ use R83Dev\TestAccessible\AccessibleTrait;
  *
  * A abstract testcase to test properties of an entity.
  *
+ * @phpstan-template T of object
+ *
  * @author Michael Wagner
  */
 trait EntityPropertiesTrait
@@ -18,7 +20,7 @@ trait EntityPropertiesTrait
     use AccessibleTrait;
 
     /**
-     * @return class-string
+     * @return class-string<T>
      */
     abstract protected static function getEntityClass(): string;
 
@@ -31,6 +33,9 @@ trait EntityPropertiesTrait
      */
     abstract protected static function getEntityProperties(): array;
 
+    /**
+     * @return T
+     */
     private function getEntity(): ?object
     {
         $modelClass = static::getEntityClass();
