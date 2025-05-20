@@ -20,18 +20,35 @@ trait EntityPropertiesTrait
     use AccessibleTrait;
 
     /**
+     * The entities fully qualified class name.
+     *
      * @return class-string<T>
      */
     abstract protected static function getEntityClass(): string;
 
     /**
-     *               [
-     *               'id' => 5,
-     *               'boolean' => true,
-     *               'name' => '#TITLE',
-     *               ];.
+     * All properties of the entity.
+     *
+     * Properties can be private, protected, public, readonly, ...
+     *
+     * Example:
+     * [
+     *     'id' => 5,
+     *     'boolean' => true,
+     *     'name' => '#TITLE',
+     *     'object' => new \stdClass(),
+     * ];
      */
     abstract protected static function getEntityProperties(): array;
+
+    /**
+     * Constructor arguments required to create the entity instance.
+     * Required for entities with mandatory constructor arguments only.
+     */
+    protected function getEntityConstructorArguments(): array
+    {
+        return [];
+    }
 
     /**
      * @return T
@@ -40,7 +57,7 @@ trait EntityPropertiesTrait
     {
         $modelClass = static::getEntityClass();
 
-        return new $modelClass();
+        return new $modelClass(...$this->getEntityConstructorArguments());
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -53,7 +70,9 @@ trait EntityPropertiesTrait
             $getter = 'is'.ucfirst($property);
         }
 
-        $this->setInaccessibleProperty($entity, $property, $value);
+        if (!$this->isEntityPropertyReadonly($property)) {
+            $this->setInaccessibleProperty($entity, $property, $value);
+        }
 
         $this->assertSame(
             $value,
@@ -73,6 +92,12 @@ trait EntityPropertiesTrait
     {
         $entity = $this->getEntity();
         $setter = 'set'.ucfirst($property);
+
+        if ($this->isEntityPropertyReadonly($property)) {
+            $this->markTestSkipped(
+                'Property "'.$property.'" of "'.$entity::class.'" is read only, can\'t test setter.'
+            );
+        }
 
         $this->assertSame(
             $entity,
@@ -104,5 +129,12 @@ trait EntityPropertiesTrait
         foreach (static::getEntityProperties() as $property => $value) {
             yield $dataSet++.'_'.$property => [$property, $value];
         }
+    }
+
+    private static function isEntityPropertyReadonly(string $property)
+    {
+        $refObject = new \ReflectionClass(static::getEntityClass());
+
+        return $refObject->getProperty($property)->isReadOnly();
     }
 }

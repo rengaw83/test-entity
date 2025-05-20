@@ -29,8 +29,9 @@ class MyEntity
 
     private bool $active = false;
 
-    public function __construct()
-    {
+    public function __construct(
+        private readonly string $key
+    ) {
         $this->categories = new ArrayCollection();
     }
 
@@ -41,6 +42,11 @@ class MyEntity
         }
 
         return $this->id;
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
     }
 
     public function getName(): string
@@ -91,11 +97,27 @@ class MyEntity
 class MyEntityTest {
     use R83Dev\TestEntity\EntityPropertiesTrait;
     
+    /**
+     * The entities fully qualified class name.
+     */
     protected static function getEntityClass(): string
     {
         return MyEntity::class;
     }
 
+    /**
+     * Constructor arguments required to create the entity instance.
+     * Required for entities with mandatory constructor arguments only
+     */
+    protected static function getEntityConstructorArguments(): array
+    {
+        return ['key'];
+    }
+
+    /**
+     * All properties of the entity.
+     * Properties can be private, protected, public, readonly, ...
+     */
     protected static function getEntityProperties(): array
     {
         return [
@@ -106,6 +128,9 @@ class MyEntityTest {
         ];
     }
 
+    /**
+     * Add your own custom tests to check special logic.
+     */
     #[\PHPUnit\Framework\Attributes\Test]
     public function getIdThrowsException(): void
     {
